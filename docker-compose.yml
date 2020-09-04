@@ -7,18 +7,17 @@ services:
     environment:
       - VIRTUAL_HOST=${HOSTNAME}
     links:
-      - mysql:mysql
-  mysql:
-    image: mysql:5.7
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - postgres:postgres
+  postgres:
+    image: postgres:12-alpine
     volumes:
-      - ./docker/mysql/data:/app
+      - "./docker/postgres/data:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
     ports:
-      - "${HOST_PORT}:3306"
+      - ${HOST_PORT}:5432
 networks:
   default:
     external:

@@ -1,6 +1,26 @@
-FROM openjdk:8u121-alpine
+FROM igorhaf/alpine:latest
 
-ARG JIRA_VERSION=7.7.1
+ENV LANG C.UTF-8
+
+RUN { \
+		echo '#!/bin/sh'; \
+		echo 'set -e'; \
+		echo; \
+		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
+	} > /usr/local/bin/docker-java-home \
+	&& chmod +x /usr/local/bin/docker-java-home
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+
+ENV JAVA_VERSION 8u252
+ENV JAVA_ALPINE_VERSION 8.252.09-r0
+
+RUN set -x \
+	&& apk add --no-cache \
+		openjdk8="$JAVA_ALPINE_VERSION" \
+	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
+
+ARG JIRA_VERSION=8.6.1
 ARG JIRA_HOME=/var/atlassian/jira
 ARG JIRA_INSTALL=/opt/atlassian/jira
 ARG RUN_USER=jira

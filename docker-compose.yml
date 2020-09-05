@@ -8,6 +8,8 @@ services:
       - VIRTUAL_HOST=${HOSTNAME}
     links:
       - postgres:postgres
+    volumes:
+      - "./jira:/var/atlassian/jira"
   postgres:
     image: postgres:12-alpine
     volumes:
